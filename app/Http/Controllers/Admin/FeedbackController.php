@@ -80,6 +80,11 @@ class FeedbackController extends Controller
             'status' => 'required|in:complete,on_progress'
         ]);
 
+        // Check if the current status is complete and trying to change to on_progress
+        if ($aspirasi->status === 'complete' && $request->status === 'on_progress') {
+            return back()->with('error', 'Aspirasi yang sudah complete tidak dapat dikembalikan ke on progress.');
+        }
+
         $aspirasi->update([
             'status' => $request->status
         ]);

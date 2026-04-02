@@ -35,14 +35,70 @@
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-gray-700">Role</label>
-                    <select name="roles" required
-                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none appearance-none bg-white">
-                        <option value="siswa">Siswa</option>
-                        <option value="admin">Admin</option>
-                    </select>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-700">Role</label>
+                        <select name="roles" id="role-select" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none appearance-none bg-white">
+                            <option value="siswa" {{ old('roles') == 'siswa' ? 'selected' : '' }}>Siswa</option>
+                            <option value="admin" {{ old('roles') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="super_admin" {{ old('roles') == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                        </select>
+                    </div>
+
+                    <div id="kelas-field" class="space-y-2 {{ old('roles') == 'siswa' || !old('roles') ? '' : 'hidden' }}">
+                        <label class="text-sm font-semibold text-gray-700">Kelas</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <select name="grade" id="grade-select"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none appearance-none bg-white">
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
+                            <select name="major" id="major-select"
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition outline-none appearance-none bg-white">
+                                <option value="RPL">RPL</option>
+                                <option value="TKR">TKR</option>
+                                <option value="TKJ">TKJ</option>
+                                <option value="MP">MP</option>
+                                <option value="TITL">TITL</option>
+                                <option value="TBSM">TBSM</option>
+                                <option value="MESIN">MESIN</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="kelas" id="kelas-input" value="{{ old('kelas') }}">
+                        @error('kelas') <p class="text-red-500 text-xs">{{ $message }}</p> @enderror
+                    </div>
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const roleSelect = document.getElementById('role-select');
+                        const kelasField = document.getElementById('kelas-field');
+                        const gradeSelect = document.getElementById('grade-select');
+                        const majorSelect = document.getElementById('major-select');
+                        const kelasInput = document.getElementById('kelas-input');
+
+                        function updateKelas() {
+                            kelasInput.value = gradeSelect.value + ' ' + majorSelect.value;
+                        }
+
+                        roleSelect.addEventListener('change', function() {
+                            if (this.value === 'siswa') {
+                                kelasField.classList.remove('hidden');
+                            } else {
+                                kelasField.classList.add('hidden');
+                                kelasInput.value = '';
+                            }
+                        });
+
+                        gradeSelect.addEventListener('change', updateKelas);
+                        majorSelect.addEventListener('change', updateKelas);
+
+                        // Initial update
+                        updateKelas();
+                    });
+                </script>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">

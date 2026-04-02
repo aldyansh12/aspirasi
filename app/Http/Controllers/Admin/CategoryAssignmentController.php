@@ -27,6 +27,7 @@ class CategoryAssignmentController extends Controller
     {
         $data = $request->validate([
             'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:penanggung_jawabs,email',
             'jabatan' => 'nullable|string|max:255',
         ]);
 
@@ -44,6 +45,7 @@ class CategoryAssignmentController extends Controller
         
         $data = $request->validate([
             'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:penanggung_jawabs,email,' . $id,
             'jabatan' => 'nullable|string|max:255',
         ]);
 
@@ -78,11 +80,11 @@ class CategoryAssignmentController extends Controller
         // Reset all categories previously assigned to this person
         Kategori::where('penanggung_jawab_id', $pjId)->update(['penanggung_jawab_id' => null]);
         
-        // Assign new categories
         if ($request->has('category_ids')) {
             Kategori::whereIn('id', $request->category_ids)->update(['penanggung_jawab_id' => $pjId]);
         }
 
+        return redirect()->route('admin.category-assignments.index')->with('success', 'Penugasan kategori berhasil diperbarui.');
     }
 
     /**
@@ -99,5 +101,24 @@ class CategoryAssignmentController extends Controller
         $category->update($data);
 
         return redirect()->route('admin.category-assignments.index')->with('success', 'Email kategori berhasil diperbarui.');
+    }
+
+    /**
+     * Store a new Category
+     */
+    public function storeCategory(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:kategoris,name',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        Kategori::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'details' => $request->name, // Default details to name since it's not nullable
+        ]);
+
+        return redirect()->route('admin.category-assignments.index')->with('success', 'Kategori baru berhasil ditambahkan.');
     }
 }

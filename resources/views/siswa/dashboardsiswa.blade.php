@@ -10,7 +10,11 @@
         <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
                 <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-2">
-                    Halo, <span class="text-blue-400">{{ auth()->user()->username }}</span> 👋
+                    Halo, <span class="text-blue-400">{{ auth()->user()->username }}</span> 
+                    @if(auth()->user()->kelas)
+                        <span class="text-gray-400 text-lg md:text-xl font-medium">({{ auth()->user()->kelas }})</span>
+                    @endif
+                    👋
                 </h2>
                 <p class="text-gray-400 font-medium max-w-md">Sampaikan aspirasi Anda untuk memajukan sekolah kita bersama. Suara Anda sangat berharga.</p>
             </div>

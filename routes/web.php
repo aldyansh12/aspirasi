@@ -139,6 +139,12 @@ Route::middleware(['auth', 'role:admin,super_admin'])
 
         Route::post('/users', [UserController::class, 'store'])
             ->name('admin.users.store');
+
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])
+            ->name('admin.users.edit');
+
+        Route::put('/users/{id}', [UserController::class, 'update'])
+            ->name('admin.users.update');
         /*
         | Penugasan & Manajemen Personil (Consolidated)
         */
@@ -159,6 +165,8 @@ Route::middleware(['auth', 'role:admin,super_admin'])
                 ->name('admin.category-assignments.update-assignments');
 
             // Category Management
+            Route::post('/category', [\App\Http\Controllers\Admin\CategoryAssignmentController::class, 'storeCategory'])
+                ->name('admin.category-assignments.store-category');
             Route::put('/category/{id}', [\App\Http\Controllers\Admin\CategoryAssignmentController::class, 'updateCategory'])
                 ->name('admin.category-assignments.update-category');
         });

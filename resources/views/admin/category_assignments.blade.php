@@ -46,6 +46,7 @@
                             </div>
                             <div>
                                 <div class="text-sm font-black text-gray-900">{{ $pj->nama }}</div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ $pj->email }}</div>
                             </div>
                         </div>
                     </td>
@@ -68,7 +69,7 @@
                             <button onclick="openAssignModal('{{ $pj->id }}', '{{ $pj->nama }}')" class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition text-xs font-black border border-blue-200 uppercase tracking-tighter">
                                 Atur Penugasan
                             </button>
-                             <button onclick="openEditPersonModal('{{ $pj->id }}', '{{ $pj->nama }}', '{{ $pj->jabatan }}')" class="p-1.5 text-gray-400 hover:text-blue-600 transition" title="Edit Profil">
+                             <button onclick="openEditPersonModal('{{ $pj->id }}', '{{ $pj->nama }}', '{{ $pj->email }}', '{{ $pj->jabatan }}')" class="p-1.5 text-gray-400 hover:text-blue-600 transition" title="Edit Profil">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
@@ -162,8 +163,18 @@
 
     <!-- Category Management Section -->
     <div class="mt-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Manajemen Kategori</h2>
-        <p class="text-gray-600 mb-6">Kelola email bersama untuk setiap kategori aspirasi</p>
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Manajemen Kategori</h2>
+                <p class="text-gray-600">Kelola email bersama untuk setiap kategori aspirasi</p>
+            </div>
+            <button onclick="openCreateCategoryModal()" class="px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-bold flex items-center gap-2 shadow-md text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Tambah Kategori Baru
+            </button>
+        </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <table class="w-full">
@@ -212,6 +223,10 @@
                             <input type="text" name="nama" required placeholder="Contoh: Budi Santoso" class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
                         </div>
                         <div>
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
+                            <input type="email" name="email" required placeholder="Contoh: budi@sekolah.sch.id" class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
+                        </div>
+                        <div>
                             <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Jabatan (Opsional)</label>
                             <input type="text" name="jabatan" placeholder="Contoh: Wakasek Kesiswaan" class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
                         </div>
@@ -244,6 +259,10 @@
                         <div>
                             <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Nama Lengkap</label>
                             <input type="text" name="nama" id="edit_pj_nama" required class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Email Address</label>
+                            <input type="email" name="email" id="edit_pj_email" required class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
                         </div>
                         <div>
                             <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Jabatan (Opsional)</label>
@@ -296,6 +315,39 @@
     </div>
 </div>
 
+<!-- Create Category Modal -->
+<div id="createCategoryModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-60 backdrop-blur-sm" onclick="closeCreateCategoryModal()"></div>
+        <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-3xl shadow-2xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <form action="{{ route('admin.category-assignments.store-category') }}" method="POST">
+                @csrf
+                <div class="px-6 py-8 bg-white sm:p-10">
+                    <h3 class="text-2xl font-black text-gray-900 mb-8 leading-tight">Tambah Kategori Baru</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Nama Kategori</label>
+                            <input type="text" name="name" required placeholder="Contoh: Sarana & Prasarana" class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Email Bersama (Opsional)</label>
+                            <input type="email" name="email" placeholder="kategori@sekolah.sch.id" class="block w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:ring-0 transition font-bold text-gray-700 bg-gray-50/50">
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-6 bg-gray-50 flex flex-col sm:flex-row-reverse gap-3 border-t border-gray-100">
+                    <button type="submit" class="px-8 py-3.5 text-sm font-black text-white bg-blue-600 rounded-2xl hover:bg-blue-700 transition shadow-lg shadow-blue-200 uppercase tracking-widest">
+                        Tambah Kategori
+                    </button>
+                    <button type="button" onclick="closeCreateCategoryModal()" class="px-8 py-3.5 text-sm font-black text-gray-700 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 transition uppercase tracking-widest">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     function openAssignModal(id, name) {
         document.getElementById('assign-modal-' + id).classList.remove('hidden');
@@ -313,9 +365,10 @@
         document.getElementById('createPersonModal').classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
     }
-    function openEditPersonModal(id, nama, jabatan) {
+    function openEditPersonModal(id, nama, email, jabatan) {
         document.getElementById('editPersonForm').action = '/admin/category-assignments/person/' + id;
         document.getElementById('edit_pj_nama').value = nama;
+        document.getElementById('edit_pj_email').value = email;
         document.getElementById('edit_pj_jabatan').value = jabatan;
         document.getElementById('editPersonModal').classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
@@ -333,6 +386,14 @@
     }
     function closeEditCategoryModal() {
         document.getElementById('editCategoryModal').classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+    function openCreateCategoryModal() {
+        document.getElementById('createCategoryModal').classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+    function closeCreateCategoryModal() {
+        document.getElementById('createCategoryModal').classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
     }
 </script>

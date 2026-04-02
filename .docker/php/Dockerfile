@@ -41,7 +41,6 @@ RUN docker-php-ext-install pcntl
 # Node.js, NPM, Yarn
 RUN curl -sL https://deb.nodesource.com/setup_22.x | bash -
 RUN apt-get install -y nodejs
-RUN npm install npm@latest -g
 RUN npm install yarn -g
 
 # Composer

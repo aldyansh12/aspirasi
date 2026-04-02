@@ -20,6 +20,7 @@ class User extends Authenticatable
         'otp_expires_at',
         'roles',
         'password',
+        'kelas',
     ];
     
     protected $casts = [
