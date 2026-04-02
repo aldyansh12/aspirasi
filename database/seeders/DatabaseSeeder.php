@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(AdminStudentSeeder::class);
+
         // SUPER ADMIN
         if (!User::where('username', 'superadmin')->exists()) {
             User::create([
